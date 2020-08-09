@@ -1,1 +1,7 @@
+# Placeholders
 .placeholders
+
+# Secrets file
+.secrets
+# Secrets folders
+secret
