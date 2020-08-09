@@ -3,6 +3,7 @@ kind: Kustomization
 
 bases:
 - cert-manager
+- lets-encrypt
 - argocd
 - docker-registry
 - drone
