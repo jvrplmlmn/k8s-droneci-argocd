@@ -5,7 +5,11 @@ Run a CI/CD stack in Kubernetes composed of a Docker Registry, DroneCI, ArgoCD w
 
 - A working Kubernetes cluster with `ingress-nginx`.
   Since this is provider specific, make sure to follow https://kubernetes.github.io/ingress-nginx/deploy/
-- `kubectl`
+- DNS records for (replace `example.com` with your domain):
+  - Drone: `drone.example.com`
+  - Docker Registry: `registry.example.com`
+  - Demo app (FooBarQix): `example.com`
+- `kubectl`: Required to manage the Kubernetes resources
 - `htpasswd`: Required to generate the auth of the Docker Registry
 
 Optional, required to update some manifests:
