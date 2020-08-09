@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Do not set the namespace here, since the ArgoCD managed resources
+# need to be deployed to the 'argocd' namespace.
+# namespace: foobarqix
+
+resources:
+- namespace.yaml
+- foobarqix.yaml

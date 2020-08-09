@@ -6,3 +6,4 @@ bases:
 - argocd
 - docker-registry
 - drone
+- foobarqix

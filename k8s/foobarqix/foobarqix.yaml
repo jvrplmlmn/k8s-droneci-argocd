@@ -1,0 +1,49 @@
+# Refererence:
+# https://argoproj.github.io/argo-cd/operator-manual/application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: foobarqix
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/jvrplmlmn/test-7942623'
+    targetRevision: HEAD
+    path: helm-foobarqix
+    helm:
+      values: |
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            cert-manager.io/cluster-issuer: "letsencrypt-production"
+          path: /
+          hosts:
+            - host: ___PLACEHOLDER_FOOBARQIX_DOMAIN___
+              paths:
+                - "/"
+          tls:
+          - secretName: ___PLACEHOLDER_FOOBARQIX_TLS_SECRET_NAME___
+            hosts:
+              - ___PLACEHOLDER_FOOBARQIX_DOMAIN___
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: foobarqix
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - Validate=false
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
