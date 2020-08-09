@@ -1,0 +1,24 @@
+diff --git a/kust/docker-registry/docker-registry.yaml b/kust/docker-registry/docker-registry.yaml
+index 75ba39f..83ff944 100644
+--- a/kust/docker-registry/docker-registry.yaml
++++ b/kust/docker-registry/docker-registry.yaml
+@@ -1,19 +1,4 @@
+ ---
+-# Source: docker-registry/templates/secret.yaml
+-apiVersion: v1
+-kind: Secret
+-metadata:
+-  name: docker-registry-secret
+-  labels:
+-    app: docker-registry
+-    chart: docker-registry-1.9.4
+-    heritage: Helm
+-    release: docker-registry
+-type: Opaque
+-data:
+-  htpasswd: X19QTEFDRUhPTERFUl9GT1JfSFRQQVNTV0RfUEFUQ0hfXw==
+-  haSharedSecret: "X19QTEFDRUhPTERFUl9GT1JfU0hBUkVEX1NFQ1JFVF9QQVRDSF9f"
+----
+ # Source: docker-registry/templates/configmap.yaml
+ apiVersion: v1
+ kind: ConfigMap

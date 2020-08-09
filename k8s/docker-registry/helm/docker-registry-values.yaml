@@ -1,0 +1,35 @@
+ingress:
+  enabled: true
+  path: /
+  # Used to create an Ingress record.
+  hosts:
+    - ___PLACEHOLDER_DOCKER_REGISTRY_DOMAIN___
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    # 1GB should be more than enough to upload our images
+    nginx.ingress.kubernetes.io/proxy-body-size: "1000m"
+  tls:
+   - secretName: ___PLACEHOLDER_DOCKER_REGISTRY_TLS_SECRET_NAME___
+     hosts:
+       - ___PLACEHOLDER_DOCKER_REGISTRY_DOMAIN___
+persistence:
+  enabled: false
+
+# We use a placeholder in order to be able to render the Helm Chart
+# as a plain text Kubernetes manifest, then we patch it to remove the
+# secret, and instead, we define our own in a classic 4D chess move.
+# This is required because the Helm Chart does not allow us to configure
+# the secret that we would like to use.
+#
+# $ echo "__PLACEHOLDER_FOR_HTPASSWD_PATCH__" | base64
+# X19QTEFDRUhPTERFUl9GT1JfSFRQQVNTV0RfUEFUQ0hfXwo=
+#
+# $ echo "__PLACEHOLDER_FOR_SHARED_SECRET_PATCH__" | base64
+# X19QTEFDRUhPTERFUl9GT1JfU0hBUkVEX1NFQ1JFVF9QQVRDSF9fCg==
+#
+secrets:
+  htpasswd: |-
+    __PLACEHOLDER_FOR_HTPASSWD_PATCH__
+  haSharedSecret: |-
+    __PLACEHOLDER_FOR_SHARED_SECRET_PATCH__

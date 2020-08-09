@@ -4,3 +4,4 @@ kind: Kustomization
 bases:
 - cert-manager
 - argocd
+- docker-registry
