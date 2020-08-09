@@ -44,3 +44,31 @@ env $(cat .secrets | xargs) bash scripts/populate-secrets.sh
 ```bash
 bash ./scripts/provision.sh
 ```
+
+## Clarifications
+
+### LetsEncrypt
+
+Since we use LetsEncrypt to manage the SSL certificates, be wary of the [rate-limits](https://letsencrypt.org/docs/rate-limits/).
+
+You can verify the status of the orders with:
+
+```bash
+kubectl describe order --all-namespaces=true
+```
+
+Here is an example output snippet of being rate limited:
+
+```
+$ kubectl describe order --all-namespaces=true
+(...)
+  Issuer Ref:
+    Group:  cert-manager.io
+    Kind:   ClusterIssuer
+    Name:   letsencrypt-production
+Status:
+  Failure Time:  2020-08-09T22:21:17Z
+  Reason:        Failed to create Order: 429 urn:ietf:params:acme:error:rateLimited: Error creating new order :: too many certificates already issued for exact set of domains: example.com: see https://letsencrypt.org/docs/rate-limits/
+  State:         errored
+Events:          <none>
+```
