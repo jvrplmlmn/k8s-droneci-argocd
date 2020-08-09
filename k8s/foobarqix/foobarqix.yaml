@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/jvrplmlmn/test-7942623'
+    repoURL: 'https://github.com/jvrplmlmn/k8s-droneci-argocd'
     targetRevision: HEAD
-    path: helm-foobarqix
+    path: helm/foobarqix
     helm:
       values: |
         ingress:
