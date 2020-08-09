@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+helm repo update
+
 helm template \
     docker-registry \
     stable/docker-registry \

@@ -1,7 +1,7 @@
-diff --git a/kust/docker-registry/docker-registry.yaml b/kust/docker-registry/docker-registry.yaml
-index 75ba39f..83ff944 100644
---- a/kust/docker-registry/docker-registry.yaml
-+++ b/kust/docker-registry/docker-registry.yaml
+diff --git a/k8s/docker-registry/docker-registry.yaml b/k8s/docker-registry/docker-registry.yaml
+index 57a72c8..54ab211 100644
+--- a/k8s/docker-registry/docker-registry.yaml
++++ b/k8s/docker-registry/docker-registry.yaml
 @@ -1,19 +1,4 @@
  ---
 -# Source: docker-registry/templates/secret.yaml
