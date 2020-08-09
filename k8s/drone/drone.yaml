@@ -1,0 +1,137 @@
+---
+# Source: drone/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drone
+  labels:
+    helm.sh/chart: drone-0.1.6
+    app.kubernetes.io/name: drone
+    app.kubernetes.io/instance: drone
+    app.kubernetes.io/component: server
+    app.kubernetes.io/version: "1.8.1"
+    app.kubernetes.io/managed-by: Helm
+data:
+  
+  DRONE_SERVER_HOST: "___PLACEHOLDER_DRONE_DOMAIN___"
+  DRONE_SERVER_PROTO: "https"
+---
+# Source: drone/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone
+  labels:
+    helm.sh/chart: drone-0.1.6
+    app.kubernetes.io/name: drone
+    app.kubernetes.io/instance: drone
+    app.kubernetes.io/component: server
+    app.kubernetes.io/version: "1.8.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: drone
+    app.kubernetes.io/instance: drone
+    app.kubernetes.io/component: server
+---
+# Source: drone/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone
+  labels:
+    helm.sh/chart: drone-0.1.6
+    app.kubernetes.io/name: drone
+    app.kubernetes.io/instance: drone
+    app.kubernetes.io/component: server
+    app.kubernetes.io/version: "1.8.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: drone
+      app.kubernetes.io/instance: drone
+      app.kubernetes.io/component: server
+  strategy:
+        {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: drone
+        app.kubernetes.io/instance: drone
+        app.kubernetes.io/component: server
+      annotations:
+        checksum/secrets: 23484260d4892831e6af94184c33e454936b56b1b619ef11cb269c344171eb23
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        {}
+      containers:
+        - name: server
+          securityContext:
+            {}
+          image: "drone/drone:1.8.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+          envFrom:
+            - configMapRef:
+                name: drone
+            - secretRef:
+                name: drone-rpc
+            - secretRef:
+                name: drone-github-client
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /data
+              subPath: ""
+      volumes:
+        
+        - name: storage-volume
+          emptyDir:
+            {}
+---
+# Source: drone/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: drone
+  labels:
+    helm.sh/chart: drone-0.1.6
+    app.kubernetes.io/name: drone
+    app.kubernetes.io/instance: drone
+    app.kubernetes.io/component: server
+    app.kubernetes.io/version: "1.8.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - hosts:
+        - "___PLACEHOLDER_DRONE_DOMAIN___"
+      secretName: ___PLACEHOLDER_DRONE_TLS_SECRET_NAME___
+  rules:
+    - host: "___PLACEHOLDER_DRONE_DOMAIN___"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: drone
+              servicePort: 80

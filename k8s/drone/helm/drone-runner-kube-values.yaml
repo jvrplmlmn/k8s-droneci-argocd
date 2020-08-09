@@ -1,0 +1,18 @@
+## Each namespace listed below will be configured such that the runner can run build Pods in
+## it. This comes in the form of a Role and a RoleBinding. If you change env.DRONE_NAMESPACE_DEFAULT
+## or the other DRONE_NAMESPACE_* variables, make sure to update this list to include all
+## namespaces.
+rbac:
+  buildNamespaces:
+    - drone
+
+extraSecretNamesForEnvFrom:
+  # Sets:
+  # - DRONE_RPC_SECRET
+  - drone-rpc
+
+env:
+  ## Determines the default Kubernetes namespace for Drone builds to run in.
+  ## Ref: https://kube-runner.docs.drone.io/installation/reference/drone-namespace-default/
+  ##
+  DRONE_NAMESPACE_DEFAULT: drone

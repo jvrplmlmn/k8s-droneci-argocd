@@ -5,3 +5,4 @@ bases:
 - cert-manager
 - argocd
 - docker-registry
+- drone

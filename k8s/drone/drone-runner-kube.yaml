@@ -1,0 +1,161 @@
+---
+# Source: drone-runner-kube/templates/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drone-runner-kube
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: drone-runner-kube/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drone-runner-kube
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+data:
+  
+  DRONE_NAMESPACE_DEFAULT: "drone"
+  DRONE_RPC_HOST: "drone"
+  DRONE_RPC_PROTO: "http"
+---
+# Source: drone-runner-kube/templates/rbac.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-runner-kube
+  namespace: "drone"
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+    verbs:
+      - get
+      - create
+      - delete
+      - list
+      - watch
+      - update
+---
+# Source: drone-runner-kube/templates/rbac.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: drone-runner-kube
+  namespace: "drone"
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+subjects:
+  - kind: ServiceAccount
+    name: drone-runner-kube
+    namespace: default
+roleRef:
+  kind: Role
+  name: drone-runner-kube
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: drone-runner-kube/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone-runner-kube
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+---
+# Source: drone-runner-kube/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drone-runner-kube
+  labels:
+    helm.sh/chart: drone-runner-kube-0.1.3
+    app.kubernetes.io/name: drone-runner-kube
+    app.kubernetes.io/instance: drone-runner-kube
+    app.kubernetes.io/component: drone-runner-kube
+    app.kubernetes.io/version: "1.0.0-beta.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: drone-runner-kube
+      app.kubernetes.io/instance: drone-runner-kube
+      app.kubernetes.io/component: drone-runner-kube
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: drone-runner-kube
+        app.kubernetes.io/instance: drone-runner-kube
+        app.kubernetes.io/component: drone-runner-kube
+      annotations:
+        checksum/secrets: c652f34552e00e4330fb4e341e91aaa2092586627ba191f9082c903c071792a5
+    spec:
+      serviceAccountName: drone-runner-kube
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 3600
+      containers:
+        - name: server
+          securityContext:
+            {}
+          image: "drone/drone-runner-kube:1.0.0-beta.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          resources:
+            {}
+          envFrom:
+            - configMapRef:
+                name: drone-runner-kube
+            - secretRef:
+                name: drone-rpc
