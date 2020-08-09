@@ -3,3 +3,5 @@ kind: Kustomization
 
 resources:
 - upstream/cert-manager-v0.15.1.yaml
+- cluster-issuer/lets-encrypt/staging.yaml
+- cluster-issuer/lets-encrypt/production.yaml
