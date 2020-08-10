@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Usage:
-# 
-# env $(cat k8s/secrets/secrets.env | xargs) bash ./k8s/create-drone-secrets.sh
+#
+# env $(cat path/to/secrets.env | xargs) bash ./k8s/create-drone-secrets.sh
 #
 #
 
